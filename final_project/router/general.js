@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require("axios").default;
 
 public_users.post("/register", (req, res) => {
   //Write your code here
@@ -56,5 +57,17 @@ public_users.get("/review/:isbn", function (req, res) {
   const book = req.params.isbn;
   res.send(book.reviews);
 });
+
+const req = axios.get("http://localhost:5000");
+
+req
+  .then((resp) => {
+    let courseDetails = resp.data;
+    console.log(JSON.stringify(courseDetails, null, 4));
+  })
+  .catch((err) => {
+    console.log(err.toString());
+    //This will console log the error withe the code. eg. Error: Request failed with status code 404
+  });
 
 module.exports.general = public_users;

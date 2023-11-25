@@ -39,7 +39,7 @@ regd_users.post("/login", (req, res) => {
   if (authenticatedUser(username, password)) {
     let accessToken = jwt.sign(
       {
-        data: password,
+        data: username,
       },
       "access",
       { expiresIn: 60 * 60 }
@@ -59,23 +59,39 @@ regd_users.post("/login", (req, res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-    const isbn = req.params.isbn;
-    let filtered_books = books.filter((book) => book.isbn === isbn);
-    if (filtered_books.length > 0) {
-        let filtered_book = filtered_books[0];
-        let review = req.query.review;
-
-        if(review) {
-            filtered_book.review = review
-        }
-
-        books = books.filter((book) => book.isbn != isbn);
-        books.push(filtered_book);
-        res.send(`The review for the book with ISBN  ${isbn} has been added/updated.`);
+  const isbn = req.params.isbn;
+  const user = req.user;
+  console.log(user);
+  let find_book = books[isbn];
+  if (find_book) {
+    const review = find_book.reviews[user];
+    if (review) review = { message: req.body.message };
+    else {
+      find_book.reviews[user.data] = {
+        message: req.body.message,
+      };
     }
-    else{
-        res.send("Unable to find this ISBN!");
-    }
+
+    res.send(
+      `The review for the book with ISBN  ${isbn} has been added/updated.`
+    );
+  } else {
+    res.send("Unable to find this ISBN!");
+  }
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  //Write your code here
+  const isbn = req.params.isbn;
+  const user = req.user;
+  let find_book = books[isbn];
+  if (find_book) {
+    delete find_book.reviews[user.data];
+    res.send(`The review for the book with ISBN  ${isbn} has been deleted`);
+  } else {
+    res.send("Unable to find this ISBN!");
+  }
 });
 
 module.exports.authenticated = regd_users;
