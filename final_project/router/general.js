@@ -58,8 +58,7 @@ public_users.get("/review/:isbn", function (req, res) {
   res.send(book.reviews);
 });
 
-const req = axios.get("http://localhost:5000");
-
+const getLL = axios.get("http://localhost:5000");
 req
   .then((resp) => {
     let courseDetails = resp.data;
