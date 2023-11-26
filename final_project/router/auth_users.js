@@ -65,10 +65,10 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   let find_book = books[isbn];
   if (find_book) {
     const review = find_book.reviews[user];
-    if (review) review = { message: req.body.message };
+    if (review) review = { review: req.body.review };
     else {
       find_book.reviews[user.data] = {
-        message: req.body.message,
+        review: req.body.review,
       };
     }
 

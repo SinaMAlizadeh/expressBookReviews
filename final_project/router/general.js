@@ -64,11 +64,16 @@ public_users.get("/author/:author", function (req, res) {
   //   return res.status(404).json({ message: "Book not found" });
   // }
   let getBookByAuthor = new Promise((resolve, reject) => {
-    const book = Object.values(books).find(
+    const book = Object.values(books).filter(
       ({ author }) => author === req.params.author
     );
-    if (book) resolve(book);
-    else {
+
+    if (book) {
+      const response = {
+        booksbyauthor: book,
+      };
+      resolve(response);
+    } else {
       reject({ message: "Book not found" });
     }
   });
@@ -90,11 +95,15 @@ public_users.get("/title/:title", function (req, res) {
   //   return res.status(404).json({ message: "Book not found" });
   // }
   let getBookByTitle = new Promise((resolve, reject) => {
-    const book = Object.values(books).find(
+    const book = Object.values(books).filter(
       ({ title }) => title === req.params.title
     );
-    if (book) resolve(book);
-    else {
+    if (book) {
+      const response = {
+        booksbytitle: book,
+      };
+      resolve(response);
+    } else {
       reject({ message: "Book not found" });
     }
   });
@@ -108,11 +117,11 @@ public_users.get("/title/:title", function (req, res) {
 //  Get book review
 public_users.get("/review/:isbn", function (req, res) {
   //Write your code here
-  const isb = req.params.isbn;
-  const book = books[isb];
+  const isbn = req.params.isbn;
+  const book = books[isbn];
   if (book) res.send(book.reviews);
   else {
-    res.status(404).json({ message: `There is not any book with ${isb}` });
+    res.status(404).json({ message: `The books with ${isbn} not found` });
   }
 });
 
